@@ -191,6 +191,59 @@
             box-shadow: 0 8px 24px rgba(236, 72, 153, 0.5);
         }
 
+        /* Conditional fields */
+        .conditional-field {
+            display: none;
+            margin-top: 16px;
+        }
+
+        .conditional-field.visible {
+            display: block;
+        }
+
+        .duration-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .duration-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .duration-option:hover {
+            border-color: #fbbf24;
+        }
+
+        .duration-option input[type="radio"] {
+            width: auto;
+            accent-color: #f59e0b;
+        }
+
+        .duration-option label {
+            margin: 0;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .manual-duration {
+            display: none;
+            margin-top: 12px;
+        }
+
+        .manual-duration.visible {
+            display: block;
+        }
+
         /* Invoice Preview Styles */
         .preview-container {
             display: none;
@@ -224,10 +277,7 @@
             font-size: 48px;
             font-weight: 700;
             letter-spacing: 8px;
-            background: linear-gradient(135deg, #ec4899 0%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ec4899;
             margin-bottom: 16px;
         }
 
@@ -246,7 +296,7 @@
         }
 
         .invoice-meta strong {
-            color: #334155;
+            color: #0ea5e9;
         }
 
         .invoice-section {
@@ -272,12 +322,12 @@
         }
 
         .invoice-label {
-            color: #94a3b8;
-            font-weight: 500;
+            color: #0ea5e9;
+            font-weight: 600;
         }
 
         .invoice-value {
-            color: #1e293b;
+            color: #334155;
             font-weight: 600;
         }
 
@@ -301,29 +351,39 @@
             font-family: 'Playfair Display', serif;
             font-size: 36px;
             font-weight: 700;
-            background: linear-gradient(135deg, #ec4899 0%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ec4899;
         }
 
         .payment-box {
-            background: #f8fafc;
+            background: #eff6ff;
             border-radius: 12px;
             padding: 20px;
             border-left: 4px solid #38bdf8;
         }
 
         .payment-box .invoice-section-title {
-            color: #38bdf8;
-            border-bottom-color: #e0f2fe;
+            color: #0ea5e9;
+            border-bottom-color: #bae6fd;
         }
 
-        .notes-box {
-            background: #fffbeb;
+        .usage-rights-box {
+            background: #fefce8;
             border-radius: 12px;
             padding: 20px;
             border-left: 4px solid #fbbf24;
+            margin-top: 24px;
+        }
+
+        .usage-rights-box .invoice-section-title {
+            color: #f59e0b;
+            border-bottom-color: #fef3c7;
+        }
+
+        .notes-box {
+            background: #f0fdf4;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #22c55e;
             margin-top: 24px;
             display: none;
         }
@@ -333,13 +393,13 @@
         }
 
         .notes-box .invoice-section-title {
-            color: #f59e0b;
-            border-bottom-color: #fef3c7;
+            color: #22c55e;
+            border-bottom-color: #bbf7d0;
         }
 
         .notes-text {
             font-size: 13px;
-            color: #78716c;
+            color: #166534;
             line-height: 1.6;
             white-space: pre-wrap;
         }
@@ -350,7 +410,8 @@
             padding-top: 24px;
             border-top: 1px solid #e2e8f0;
             font-size: 12px;
-            color: #94a3b8;
+            color: #ec4899;
+            font-weight: 600;
         }
 
         .preview-buttons {
@@ -464,6 +525,45 @@
                 </div>
 
                 <div class="form-section">
+                    <div class="section-title">Usage Rights</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="yellowCart">Yellow Cart</label>
+                            <select id="yellowCart">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="conditional-field" id="adsDurationField">
+                        <label>Ads Usage Duration</label>
+                        <div class="duration-options">
+                            <div class="duration-option">
+                                <input type="radio" name="adsDuration" id="duration30" value="30 Days">
+                                <label for="duration30">30 Days</label>
+                            </div>
+                            <div class="duration-option">
+                                <input type="radio" name="adsDuration" id="duration60" value="60 Days">
+                                <label for="duration60">60 Days</label>
+                            </div>
+                            <div class="duration-option">
+                                <input type="radio" name="adsDuration" id="duration90" value="90 Days">
+                                <label for="duration90">90 Days</label>
+                            </div>
+                            <div class="duration-option">
+                                <input type="radio" name="adsDuration" id="durationOther" value="Others">
+                                <label for="durationOther">Others</label>
+                            </div>
+                        </div>
+                        <div class="manual-duration" id="manualDurationField">
+                            <label for="manualDuration">Specify Duration</label>
+                            <input type="text" id="manualDuration" placeholder="e.g., 6 months, 1 year, etc.">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
                     <div class="section-title">Payment</div>
                     <div class="form-group">
                         <label for="invoiceAmount">Invoice Amount (RM)</label>
@@ -523,6 +623,16 @@
                     </div>
                 </div>
 
+                <div class="usage-rights-box">
+                    <div class="invoice-section-title">Usage Rights</div>
+                    <div class="invoice-grid">
+                        <span class="invoice-label">Yellow Cart</span>
+                        <span class="invoice-value" id="prevYellowCart">-</span>
+                        <span class="invoice-label" id="adsDurationLabel" style="display: none;">Ads Duration</span>
+                        <span class="invoice-value" id="prevAdsDuration" style="display: none;">-</span>
+                    </div>
+                </div>
+
                 <div class="invoice-amount-box">
                     <div class="invoice-amount-label">Total Amount</div>
                     <div class="invoice-amount-value" id="prevAmount">RM 0.00</div>
@@ -565,6 +675,35 @@
         const form = document.getElementById('invoiceForm');
         const formContainer = document.getElementById('formContainer');
         const previewContainer = document.getElementById('previewContainer');
+        const yellowCartSelect = document.getElementById('yellowCart');
+        const adsDurationField = document.getElementById('adsDurationField');
+        const manualDurationField = document.getElementById('manualDurationField');
+        const durationRadios = document.querySelectorAll('input[name="adsDuration"]');
+
+        // Yellow Cart toggle
+        yellowCartSelect.addEventListener('change', function() {
+            if (this.value === 'Yes') {
+                adsDurationField.classList.add('visible');
+            } else {
+                adsDurationField.classList.remove('visible');
+                // Reset selections
+                durationRadios.forEach(radio => radio.checked = false);
+                manualDurationField.classList.remove('visible');
+                document.getElementById('manualDuration').value = '';
+            }
+        });
+
+        // Duration radio toggle for "Others"
+        durationRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'Others') {
+                    manualDurationField.classList.add('visible');
+                } else {
+                    manualDurationField.classList.remove('visible');
+                    document.getElementById('manualDuration').value = '';
+                }
+            });
+        });
 
         // Format currency
         function formatCurrency(amount) {
@@ -594,6 +733,18 @@
             return items.length > 0 ? items.join(', ') : '-';
         }
 
+        // Get ads duration
+        function getAdsDuration() {
+            const selectedRadio = document.querySelector('input[name="adsDuration"]:checked');
+            if (!selectedRadio) return '-';
+            
+            if (selectedRadio.value === 'Others') {
+                const manual = document.getElementById('manualDuration').value;
+                return manual || '-';
+            }
+            return selectedRadio.value;
+        }
+
         // Show preview
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -610,6 +761,22 @@
             document.getElementById('prevProduct').textContent = document.getElementById('productName').value || '-';
             document.getElementById('prevContents').textContent = getContentSummary();
             document.getElementById('prevAmount').textContent = formatCurrency(document.getElementById('invoiceAmount').value);
+
+            // Usage Rights
+            const yellowCart = document.getElementById('yellowCart').value;
+            document.getElementById('prevYellowCart').textContent = yellowCart;
+
+            const adsDurationLabel = document.getElementById('adsDurationLabel');
+            const prevAdsDuration = document.getElementById('prevAdsDuration');
+
+            if (yellowCart === 'Yes') {
+                adsDurationLabel.style.display = 'block';
+                prevAdsDuration.style.display = 'block';
+                prevAdsDuration.textContent = getAdsDuration();
+            } else {
+                adsDurationLabel.style.display = 'none';
+                prevAdsDuration.style.display = 'none';
+            }
 
             // Handle notes
             const notes = document.getElementById('notes').value;
