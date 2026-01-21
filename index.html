@@ -259,33 +259,33 @@
 
         .invoice {
             background: white;
-            padding: 48px;
+            padding: 32px 40px;
             border-radius: 4px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.1);
         }
 
         .invoice-header {
             text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 24px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
             border-bottom: 3px solid;
             border-image: linear-gradient(90deg, #ec4899, #38bdf8) 1;
         }
 
         .invoice-title {
             font-family: 'Playfair Display', serif;
-            font-size: 48px;
+            font-size: 36px;
             font-weight: 700;
             letter-spacing: 8px;
             color: #ec4899;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
 
         .invoice-meta {
             display: flex;
             justify-content: center;
             gap: 32px;
-            font-size: 13px;
+            font-size: 12px;
             color: #64748b;
         }
 
@@ -300,25 +300,25 @@
         }
 
         .invoice-section {
-            margin-bottom: 32px;
+            margin-bottom: 20px;
         }
 
         .invoice-section-title {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #ec4899;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
             border-bottom: 1px solid #fce7f3;
         }
 
         .invoice-grid {
             display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 8px 16px;
-            font-size: 14px;
+            grid-template-columns: 100px 1fr;
+            gap: 4px 12px;
+            font-size: 11px;
         }
 
         .invoice-label {
@@ -331,60 +331,91 @@
             font-weight: 600;
         }
 
+        /* Two column layout for Bill To and Campaign */
+        .invoice-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .invoice-two-col .invoice-section {
+            margin-bottom: 0;
+        }
+
         .invoice-amount-box {
             background: linear-gradient(135deg, #fdf2f8 0%, #eff6ff 100%);
-            border-radius: 16px;
-            padding: 24px;
+            border-radius: 12px;
+            padding: 16px;
             text-align: center;
-            margin: 32px 0;
+            margin: 20px 0;
         }
 
         .invoice-amount-label {
-            font-size: 12px;
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #64748b;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .invoice-amount-value {
             font-family: 'Playfair Display', serif;
-            font-size: 36px;
+            font-size: 28px;
             font-weight: 700;
             color: #ec4899;
         }
 
-        .payment-box {
-            background: #eff6ff;
-            border-radius: 12px;
-            padding: 20px;
-            border-left: 4px solid #38bdf8;
-        }
-
-        .payment-box .invoice-section-title {
-            color: #0ea5e9;
-            border-bottom-color: #bae6fd;
+        /* Two column layout for Usage Rights and Payment */
+        .invoice-bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
         .usage-rights-box {
             background: #fefce8;
-            border-radius: 12px;
-            padding: 20px;
-            border-left: 4px solid #fbbf24;
-            margin-top: 24px;
+            border-radius: 10px;
+            padding: 14px;
+            border-left: 3px solid #fbbf24;
         }
 
         .usage-rights-box .invoice-section-title {
             color: #f59e0b;
             border-bottom-color: #fef3c7;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+        }
+
+        .usage-rights-box .invoice-grid {
+            grid-template-columns: 80px 1fr;
+        }
+
+        .payment-box {
+            background: #eff6ff;
+            border-radius: 10px;
+            padding: 14px;
+            border-left: 3px solid #38bdf8;
+        }
+
+        .payment-box .invoice-section-title {
+            color: #0ea5e9;
+            border-bottom-color: #bae6fd;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+        }
+
+        .payment-box .invoice-grid {
+            grid-template-columns: 80px 1fr;
         }
 
         .notes-box {
             background: #f0fdf4;
-            border-radius: 12px;
-            padding: 20px;
-            border-left: 4px solid #22c55e;
-            margin-top: 24px;
+            border-radius: 10px;
+            padding: 14px;
+            border-left: 3px solid #22c55e;
+            margin-bottom: 16px;
             display: none;
         }
 
@@ -395,21 +426,22 @@
         .notes-box .invoice-section-title {
             color: #22c55e;
             border-bottom-color: #bbf7d0;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
         }
 
         .notes-text {
-            font-size: 13px;
+            font-size: 11px;
             color: #166534;
-            line-height: 1.6;
+            line-height: 1.5;
             white-space: pre-wrap;
         }
 
         .invoice-footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 24px;
+            padding-top: 16px;
             border-top: 1px solid #e2e8f0;
-            font-size: 12px;
+            font-size: 11px;
             color: #ec4899;
             font-weight: 600;
         }
@@ -595,41 +627,34 @@
                     </div>
                 </div>
 
-                <div class="invoice-section">
-                    <div class="invoice-section-title">Bill To</div>
-                    <div class="invoice-grid">
-                        <span class="invoice-label">Brand</span>
-                        <span class="invoice-value" id="prevBrandName">-</span>
-                        <span class="invoice-label">Company</span>
-                        <span class="invoice-value" id="prevCompanyName">-</span>
-                        <span class="invoice-label">Contact Person</span>
-                        <span class="invoice-value" id="prevContactPerson">-</span>
-                        <span class="invoice-label">WhatsApp</span>
-                        <span class="invoice-value" id="prevWhatsapp">-</span>
-                        <span class="invoice-label">Email</span>
-                        <span class="invoice-value" id="prevEmail">-</span>
+                <!-- Two column: Bill To + Campaign Details -->
+                <div class="invoice-two-col">
+                    <div class="invoice-section">
+                        <div class="invoice-section-title">Bill To</div>
+                        <div class="invoice-grid">
+                            <span class="invoice-label">Brand</span>
+                            <span class="invoice-value" id="prevBrandName">-</span>
+                            <span class="invoice-label">Company</span>
+                            <span class="invoice-value" id="prevCompanyName">-</span>
+                            <span class="invoice-label">Contact</span>
+                            <span class="invoice-value" id="prevContactPerson">-</span>
+                            <span class="invoice-label">WhatsApp</span>
+                            <span class="invoice-value" id="prevWhatsapp">-</span>
+                            <span class="invoice-label">Email</span>
+                            <span class="invoice-value" id="prevEmail">-</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="invoice-section">
-                    <div class="invoice-section-title">Campaign Details</div>
-                    <div class="invoice-grid">
-                        <span class="invoice-label">Category</span>
-                        <span class="invoice-value" id="prevCategory">-</span>
-                        <span class="invoice-label">Product</span>
-                        <span class="invoice-value" id="prevProduct">-</span>
-                        <span class="invoice-label">Contents</span>
-                        <span class="invoice-value" id="prevContents">-</span>
-                    </div>
-                </div>
-
-                <div class="usage-rights-box">
-                    <div class="invoice-section-title">Usage Rights</div>
-                    <div class="invoice-grid">
-                        <span class="invoice-label">Yellow Cart</span>
-                        <span class="invoice-value" id="prevYellowCart">-</span>
-                        <span class="invoice-label" id="adsDurationLabel" style="display: none;">Ads Duration</span>
-                        <span class="invoice-value" id="prevAdsDuration" style="display: none;">-</span>
+                    <div class="invoice-section">
+                        <div class="invoice-section-title">Campaign Details</div>
+                        <div class="invoice-grid">
+                            <span class="invoice-label">Category</span>
+                            <span class="invoice-value" id="prevCategory">-</span>
+                            <span class="invoice-label">Product</span>
+                            <span class="invoice-value" id="prevProduct">-</span>
+                            <span class="invoice-label">Contents</span>
+                            <span class="invoice-value" id="prevContents" style="line-height: 1.4;">-</span>
+                        </div>
                     </div>
                 </div>
 
@@ -638,15 +663,28 @@
                     <div class="invoice-amount-value" id="prevAmount">RM 0.00</div>
                 </div>
 
-                <div class="payment-box">
-                    <div class="invoice-section-title">Payment Information</div>
-                    <div class="invoice-grid">
-                        <span class="invoice-label">Account Name</span>
-                        <span class="invoice-value">Atirah A</span>
-                        <span class="invoice-label">Bank</span>
-                        <span class="invoice-value">RHB Bank</span>
-                        <span class="invoice-label">Account No.</span>
-                        <span class="invoice-value">16431700226682</span>
+                <!-- Two column: Usage Rights + Payment -->
+                <div class="invoice-bottom-row">
+                    <div class="usage-rights-box">
+                        <div class="invoice-section-title">Usage Rights</div>
+                        <div class="invoice-grid">
+                            <span class="invoice-label">Yellow Cart</span>
+                            <span class="invoice-value" id="prevYellowCart">-</span>
+                            <span class="invoice-label" id="adsDurationLabel" style="display: none;">Ads Duration</span>
+                            <span class="invoice-value" id="prevAdsDuration" style="display: none;">-</span>
+                        </div>
+                    </div>
+
+                    <div class="payment-box">
+                        <div class="invoice-section-title">Payment Information</div>
+                        <div class="invoice-grid">
+                            <span class="invoice-label">Account</span>
+                            <span class="invoice-value">Atirah A</span>
+                            <span class="invoice-label">Bank</span>
+                            <span class="invoice-value">RHB Bank</span>
+                            <span class="invoice-label">Account No.</span>
+                            <span class="invoice-value">16431700226682</span>
+                        </div>
                     </div>
                 </div>
 
@@ -725,10 +763,10 @@
             const story = parseInt(document.getElementById('storyInstagram').value) || 0;
             const feeds = parseInt(document.getElementById('feedsInstagram').value) || 0;
 
-            if (tiktok > 0) items.push(`${tiktok}x TikTok Video`);
-            if (reels > 0) items.push(`${reels}x Instagram Reels`);
-            if (story > 0) items.push(`${story}x Story Instagram`);
-            if (feeds > 0) items.push(`${feeds}x Feeds Instagram`);
+            if (tiktok > 0) items.push(`${tiktok}x TikTok`);
+            if (reels > 0) items.push(`${reels}x Reels`);
+            if (story > 0) items.push(`${story}x Story`);
+            if (feeds > 0) items.push(`${feeds}x Feeds`);
 
             return items.length > 0 ? items.join(', ') : '-';
         }
@@ -813,7 +851,7 @@
 
             const element = document.getElementById('invoiceContent');
             const opt = {
-                margin: 10,
+                margin: [8, 10, 8, 10],
                 filename: `Invoice-${invoiceNumber}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true },
