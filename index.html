@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fce4ec 0%, #e3f2fd 50%, #f8bbd9 100%);
+            font-family: 'Quicksand', sans-serif;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* Form Styles */
+        .form-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(236, 72, 153, 0.15), 0 8px 24px rgba(56, 189, 248, 0.1);
+        }
+
+        .form-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ec4899 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .form-section {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #ec4899;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #fce7f3;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #38bdf8;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .platform-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: linear-gradient(135deg, #fdf2f8 0%, #eff6ff 100%);
+            border-radius: 12px;
+        }
+
+        .platform-item label {
+            margin: 0;
+            flex: 1;
+            font-size: 12px;
+        }
+
+        .platform-item input {
+            width: 60px;
+            text-align: center;
+            padding: 8px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-preview {
+            background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-preview:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.5);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(236, 72, 153, 0.5);
+        }
+
+        /* Invoice Preview Styles */
+        .preview-container {
+            display: none;
+        }
+
+        .preview-container.active {
+            display: block;
+        }
+
+        .form-container.hidden {
+            display: none;
+        }
+
+        .invoice {
+            background: white;
+            padding: 48px;
+            border-radius: 4px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(90deg, #ec4899, #38bdf8) 1;
+        }
+
+        .invoice-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #ec4899 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .invoice-meta {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .invoice-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .invoice-meta strong {
+            color: #334155;
+        }
+
+        .invoice-section {
+            margin-bottom: 32px;
+        }
+
+        .invoice-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ec4899;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #fce7f3;
+        }
+
+        .invoice-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 8px 16px;
+            font-size: 14px;
+        }
+
+        .invoice-label {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .invoice-value {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .invoice-amount-box {
+            background: linear-gradient(135deg, #fdf2f8 0%, #eff6ff 100%);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        .invoice-amount-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .invoice-amount-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ec4899 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .payment-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #38bdf8;
+        }
+
+        .payment-box .invoice-section-title {
+            color: #38bdf8;
+            border-bottom-color: #e0f2fe;
+        }
+
+        .notes-box {
+            background: #fffbeb;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #fbbf24;
+            margin-top: 24px;
+            display: none;
+        }
+
+        .notes-box.visible {
+            display: block;
+        }
+
+        .notes-box .invoice-section-title {
+            color: #f59e0b;
+            border-bottom-color: #fef3c7;
+        }
+
+        .notes-text {
+            font-size: 13px;
+            color: #78716c;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .invoice-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .preview-buttons {
+            margin-top: 24px;
+        }
+
+        /* Loading state */
+        .btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .btn.loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-container" id="formContainer">
+            <h1 class="form-title">Invoice Generator</h1>
+            <p class="form-subtitle">Create beautiful invoices in seconds ✨</p>
+
+            <form id="invoiceForm">
+                <div class="form-section">
+                    <div class="section-title">Invoice Details</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="invoiceNumber">Invoice Number</label>
+                            <input type="text" id="invoiceNumber" placeholder="e.g., INV-001" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoiceDate">Invoice Date</label>
+                            <input type="date" id="invoiceDate" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">Client Information</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="brandName">Brand Name</label>
+                            <input type="text" id="brandName" placeholder="Client's brand name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="companyName">Company Name</label>
+                            <input type="text" id="companyName" placeholder="Company name">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="contactPerson">Contact Person</label>
+                            <input type="text" id="contactPerson" placeholder="Contact person name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="whatsappNumber">WhatsApp Number</label>
+                            <input type="text" id="whatsappNumber" placeholder="+60 12-345 6789">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" placeholder="email@example.com">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">Campaign Details</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="campaignCategory">Campaign Category</label>
+                            <select id="campaignCategory" required>
+                                <option value="">Select category...</option>
+                                <option value="Modest Hijab">Modest Hijab</option>
+                                <option value="Accessories (Jewelry, Bags, Shoes)">Accessories (Jewelry, Bags, Shoes)</option>
+                                <option value="Beauty & Skincare">Beauty & Skincare</option>
+                                <option value="Lifestyle & Travel">Lifestyle & Travel</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="productName">Product Name</label>
+                            <input type="text" id="productName" placeholder="Product being promoted" required>
+                        </div>
+                    </div>
+
+                    <label style="margin-top: 16px; margin-bottom: 12px; display: block;">Platform & Content Count</label>
+                    <div class="platform-grid">
+                        <div class="platform-item">
+                            <label for="tiktokVideo">TikTok Video</label>
+                            <input type="number" id="tiktokVideo" value="0" min="0">
+                        </div>
+                        <div class="platform-item">
+                            <label for="instagramReels">Instagram Reels</label>
+                            <input type="number" id="instagramReels" value="0" min="0">
+                        </div>
+                        <div class="platform-item">
+                            <label for="storyInstagram">Story Instagram</label>
+                            <input type="number" id="storyInstagram" value="0" min="0">
+                        </div>
+                        <div class="platform-item">
+                            <label for="feedsInstagram">Feeds Instagram</label>
+                            <input type="number" id="feedsInstagram" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">Payment</div>
+                    <div class="form-group">
+                        <label for="invoiceAmount">Invoice Amount (RM)</label>
+                        <input type="number" id="invoiceAmount" placeholder="0.00" step="0.01" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-title">Additional Notes (Optional)</div>
+                    <div class="form-group">
+                        <textarea id="notes" placeholder="Terms & conditions, thank you notes, etc."></textarea>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-preview">Preview Invoice</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-container" id="previewContainer">
+            <div class="invoice" id="invoiceContent">
+                <div class="invoice-header">
+                    <div class="invoice-title">INVOICE</div>
+                    <div class="invoice-meta">
+                        <span><strong>No:</strong> <span id="prevInvoiceNumber">-</span></span>
+                        <span><strong>Date:</strong> <span id="prevInvoiceDate">-</span></span>
+                    </div>
+                </div>
+
+                <div class="invoice-section">
+                    <div class="invoice-section-title">Bill To</div>
+                    <div class="invoice-grid">
+                        <span class="invoice-label">Brand</span>
+                        <span class="invoice-value" id="prevBrandName">-</span>
+                        <span class="invoice-label">Company</span>
+                        <span class="invoice-value" id="prevCompanyName">-</span>
+                        <span class="invoice-label">Contact Person</span>
+                        <span class="invoice-value" id="prevContactPerson">-</span>
+                        <span class="invoice-label">WhatsApp</span>
+                        <span class="invoice-value" id="prevWhatsapp">-</span>
+                        <span class="invoice-label">Email</span>
+                        <span class="invoice-value" id="prevEmail">-</span>
+                    </div>
+                </div>
+
+                <div class="invoice-section">
+                    <div class="invoice-section-title">Campaign Details</div>
+                    <div class="invoice-grid">
+                        <span class="invoice-label">Category</span>
+                        <span class="invoice-value" id="prevCategory">-</span>
+                        <span class="invoice-label">Product</span>
+                        <span class="invoice-value" id="prevProduct">-</span>
+                        <span class="invoice-label">Contents</span>
+                        <span class="invoice-value" id="prevContents">-</span>
+                    </div>
+                </div>
+
+                <div class="invoice-amount-box">
+                    <div class="invoice-amount-label">Total Amount</div>
+                    <div class="invoice-amount-value" id="prevAmount">RM 0.00</div>
+                </div>
+
+                <div class="payment-box">
+                    <div class="invoice-section-title">Payment Information</div>
+                    <div class="invoice-grid">
+                        <span class="invoice-label">Account Name</span>
+                        <span class="invoice-value">Atirah A</span>
+                        <span class="invoice-label">Bank</span>
+                        <span class="invoice-value">RHB Bank</span>
+                        <span class="invoice-label">Account No.</span>
+                        <span class="invoice-value">16431700226682</span>
+                    </div>
+                </div>
+
+                <div class="notes-box" id="notesBox">
+                    <div class="invoice-section-title">Notes</div>
+                    <div class="notes-text" id="prevNotes"></div>
+                </div>
+
+                <div class="invoice-footer">
+                    Thank you for your business! 💕
+                </div>
+            </div>
+
+            <div class="btn-group preview-buttons">
+                <button type="button" class="btn btn-preview" id="editBtn">← Edit Invoice</button>
+                <button type="button" class="btn btn-download" id="downloadBtn">Download PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default date to today
+        document.getElementById('invoiceDate').valueAsDate = new Date();
+
+        // Form elements
+        const form = document.getElementById('invoiceForm');
+        const formContainer = document.getElementById('formContainer');
+        const previewContainer = document.getElementById('previewContainer');
+
+        // Format currency
+        function formatCurrency(amount) {
+            const num = parseFloat(amount) || 0;
+            return `RM ${num.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        // Get content summary
+        function getContentSummary() {
+            const items = [];
+            const tiktok = parseInt(document.getElementById('tiktokVideo').value) || 0;
+            const reels = parseInt(document.getElementById('instagramReels').value) || 0;
+            const story = parseInt(document.getElementById('storyInstagram').value) || 0;
+            const feeds = parseInt(document.getElementById('feedsInstagram').value) || 0;
+
+            if (tiktok > 0) items.push(`${tiktok}x TikTok Video`);
+            if (reels > 0) items.push(`${reels}x Instagram Reels`);
+            if (story > 0) items.push(`${story}x Story Instagram`);
+            if (feeds > 0) items.push(`${feeds}x Feeds Instagram`);
+
+            return items.length > 0 ? items.join(', ') : '-';
+        }
+
+        // Show preview
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Update preview values
+            document.getElementById('prevInvoiceNumber').textContent = document.getElementById('invoiceNumber').value || '-';
+            document.getElementById('prevInvoiceDate').textContent = formatDate(document.getElementById('invoiceDate').value);
+            document.getElementById('prevBrandName').textContent = document.getElementById('brandName').value || '-';
+            document.getElementById('prevCompanyName').textContent = document.getElementById('companyName').value || '-';
+            document.getElementById('prevContactPerson').textContent = document.getElementById('contactPerson').value || '-';
+            document.getElementById('prevWhatsapp').textContent = document.getElementById('whatsappNumber').value || '-';
+            document.getElementById('prevEmail').textContent = document.getElementById('email').value || '-';
+            document.getElementById('prevCategory').textContent = document.getElementById('campaignCategory').value || '-';
+            document.getElementById('prevProduct').textContent = document.getElementById('productName').value || '-';
+            document.getElementById('prevContents').textContent = getContentSummary();
+            document.getElementById('prevAmount').textContent = formatCurrency(document.getElementById('invoiceAmount').value);
+
+            // Handle notes
+            const notes = document.getElementById('notes').value;
+            const notesBox = document.getElementById('notesBox');
+            if (notes.trim()) {
+                document.getElementById('prevNotes').textContent = notes;
+                notesBox.classList.add('visible');
+            } else {
+                notesBox.classList.remove('visible');
+            }
+
+            // Switch views
+            formContainer.classList.add('hidden');
+            previewContainer.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Edit button
+        document.getElementById('editBtn').addEventListener('click', function() {
+            formContainer.classList.remove('hidden');
+            previewContainer.classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Download PDF
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const btn = this;
+            const invoiceNumber = document.getElementById('invoiceNumber').value || 'draft';
+            
+            btn.classList.add('loading');
+            btn.textContent = 'Generating';
+
+            const element = document.getElementById('invoiceContent');
+            const opt = {
+                margin: 10,
+                filename: `Invoice-${invoiceNumber}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(function() {
+                btn.classList.remove('loading');
+                btn.textContent = 'Download PDF';
+            });
+        });
+    </script>
+</body>
+</html>
